@@ -1,9 +1,13 @@
 import React from 'react';
-import Image from 'next/image';
+import { useRouter } from "next/router";
 
 import {
   Product
 } from "@/saleor/api";
+
+import {
+  VariantSelector
+} from '@/components';
 
 const styles = {
   columns: 'grid grid-cols-2 gap-x-10 items-start',
@@ -19,19 +23,23 @@ const styles = {
 }
 
 interface Props {
-  product: Pick<Product, 'id' | 'name' | 'description' | 'thumbnail' | 'category' | 'media'>;
+  product: Pick<Product, 'id' | 'name' | 'description' | 'thumbnail' | 'category' | 'media' | 'variants'>;
 }
 
 export const ProductDetails = ({ product }: Props) => {
+  const router = useRouter();
+
+  const queryVariant = process.browser
+    ? router.query.variant?.toString()
+    : undefined;
+  const selectedVariantID = queryVariant || product?.variants![0]!.id!;
+
   return (
     <div className={styles.columns}>
       <div className={styles.image.aspect}>
-        <Image
-          src={product?.media![0]?.url as string}
+        <img
+          src={product?.media![0]?.url}
           className={styles.image.content}
-          alt='Product'
-          width={400}
-          height={400}
         />
       </div>
 
@@ -48,6 +56,7 @@ export const ProductDetails = ({ product }: Props) => {
         <article className={styles.details.description}>
           {product?.description}
         </article>
+        <VariantSelector variants={product?.variants || []} id={product.id} selectedVariantID={selectedVariantID} />
       </div>
     </div>
   );
