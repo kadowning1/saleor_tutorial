@@ -5,6 +5,7 @@ import { relayStylePagination } from "@apollo/client/utilities";
 import { ApolloProvider, ApolloClient, InMemoryCache } from "@apollo/client";
 
 import "../styles/globals.css";
+import { apolloClient } from 'lib/graphql';
 
 const client = new ApolloClient({
   uri: "https://vercel.saleor.cloud/graphql/",
@@ -21,7 +22,7 @@ const client = new ApolloClient({
 
 export default function MyApp({ Component, pageProps }: AppProps) {
   return (
-    <ApolloProvider client={client}>
+    <ApolloProvider client={apolloClient}>
       <Component {...pageProps} />
     </ApolloProvider>
   );
